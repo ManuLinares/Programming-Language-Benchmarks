@@ -19,50 +19,50 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       # fail-fast: false
       matrix:
         os: [ubuntu-22.04]
         lang: [
-            acton,
-            c,
+            # acton,
+            # c,
             c3,
-            chapel,
-            codon,
-            cpp,
-            csharp,
-            crystal,
-            d,
-            dart,
-            # elixir,
-            # fortran,
-            go,
-            # hacklang,
-            # haskell,
-            haxe,
-            java,
-            javascript,
-            # julia,
-            kotlin,
-            # lisp,
-            lua,
-            # nelua,
-            nim,
-            ocaml,
-            odin,
-            perl,
-            php,
-            # pony,
-            python,
-            # racket,
-            ruby,
-            rust,
-            swift,
-            typescript,
-            v,
-            wasm,
-            # wren,
-            zig,
+            # chapel,
+            # codon,
+            # cpp,
+            # csharp,
+            # crystal,
+            # d,
+            # dart,
+            # # elixir,
+            # # fortran,
+            # go,
+            # # hacklang,
+            # # haskell,
+            # haxe,
+            # java,
+            # javascript,
+            # # julia,
+            # kotlin,
+            # # lisp,
+            # lua,
+            # # nelua,
+            # nim,
+            # ocaml,
+            # odin,
+            # perl,
+            # php,
+            # # pony,
+            # python,
+            # # racket,
+            # ruby,
+            # rust,
+            # swift,
+            # typescript,
+            # v,
+            # wasm,
+            # # wren,
+            # zig,
           ]
     steps:
       - run: lscpu
@@ -242,7 +242,7 @@ jobs:
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04]
     steps:
@@ -252,7 +252,7 @@ jobs:
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04]
     steps:
@@ -273,41 +273,41 @@ jobs:
       #     dotnet run -c Release --project tool -- --task checkcpu
       #     popd
       - run: ./.github/c3.sh
-      - run: ./.github/acton.sh
-      - run: ./.github/codon.sh
-      - run: ./.github/clang.sh
-      - run: ./.github/crystal.sh
-      - run: ./.github/dotnet.sh
+      # - run: ./.github/acton.sh
+      # - run: ./.github/codon.sh
+      # - run: ./.github/clang.sh
+      # - run: ./.github/crystal.sh
+      # - run: ./.github/dotnet.sh
       # - run: ./.github/graalvm.sh
       # - run: ./.github/graalvm-node.sh
-      - run: ./.github/bun.sh
+      # - run: ./.github/bun.sh
       # - run: ./.github/truffleruby.sh
-      - run: ./.github/wasm.sh
+      # - run: ./.github/wasm.sh
       # - run: ./.github/fortran.sh
-      - uses: julia-actions/setup-julia@v1
-      - run: ./.github/lua.sh
+      # - uses: julia-actions/setup-julia@v1
+      # - run: ./.github/lua.sh
       # - run: ./.github/racket.sh
-      - run: ./.github/hashlink.sh
+      # - run: ./.github/hashlink.sh
       # - run: ./.github/hhvm.sh
       # - run: ./.github/dart.sh
-      - uses: shogo82148/actions-setup-perl@v1
-        with:
-          perl-version: "5"
-          multi-thread: true
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          coverage: none
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-          check-latest: true
-      - run: ./.github/python.sh
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3 # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      # - uses: shogo82148/actions-setup-perl@v1
+      #   with:
+      #     perl-version: "5"
+      #     multi-thread: true
+      # - name: Install PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: "8.2"
+      #     coverage: none
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: "3.x"
+      #     check-latest: true
+      # - run: ./.github/python.sh
+      # - uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: 3 # Not needed with a .ruby-version file
+      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - uses: actions/download-artifact@v4
         with:
           pattern: build-*
