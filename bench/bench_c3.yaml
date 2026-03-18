@@ -1,0 +1,42 @@
+lang: c3
+problems:
+  - name: helloworld
+    source:
+      - 1.c3
+  - name: binarytrees
+    source:
+      - 2.c3
+  - name: knucleotide
+    source:
+      - 1.c3
+  - name: mandelbrot
+    source:
+      - 1.c3
+      - 2.c3
+  - name: nbody
+    source:
+      - 2.c3
+      - 5.c3
+      - 8.c3
+  - name: nsieve
+    source:
+      - 1.c3
+  - name: spectral-norm
+    source:
+      - 3.c3
+      - 4.c3
+      - 5.c3
+      - 6.c3
+compiler_version_command: c3c --version
+compiler_version_regex:
+runtime_version_parameter:
+runtime_version_regex:
+source_rename_to: app.c3
+environments:
+  - os: linux
+    compiler: c3c
+    version: latest
+    docker:
+    build: c3c compile -O3 --cpu-flags +avx2 app.c3 -o build/app
+    out_dir: build
+    run_cmd: app
