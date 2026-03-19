@@ -349,13 +349,16 @@ jobs:
         with:
           version: 9
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           # Artifact name
           name: log
           # Destination path
           path: bench/build/_results/
+
       - name: Install
         run: |
+          mkdir -p bench/build/_results/
           ls -al bench/build/_results/
       - name: Site Update Content
         run: |
