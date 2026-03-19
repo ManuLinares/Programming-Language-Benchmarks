@@ -11,9 +11,9 @@
           :key="idx"
           class="text-light-onSurfacePrimary"
         >
-          <a :href="`/${i.lang}`" :class="getLinkClass()">{{
+          <NuxtLink :to="`/${i.lang}`" :class="getLinkClass()">{{
             i.langDisplay
-          }}</a>
+          }}</NuxtLink>
         </li>
       </ul>
     </aside>
@@ -119,11 +119,11 @@
             :key="idx"
             class="text-light-onSurfacePrimary"
           >
-            <a
-              :href="`/problem/${i}`"
+            <NuxtLink
+              :to="`/problem/${i}`"
               class="p-1 pl-3 flex rounded transition-colors duration-300 ease-linear justify-between underline text-blue-500 hover:text-green-400"
             >
-              {{ i }}</a
+              {{ i }}</NuxtLink
             >
           </li>
         </ul>

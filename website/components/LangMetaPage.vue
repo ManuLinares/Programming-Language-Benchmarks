@@ -11,11 +11,11 @@
           :key="idx"
           class="text-light-onSurfacePrimary"
         >
-          <a
+          <NuxtLink
             v-if="!isLinkActive(i.lang, '')"
-            :href="`/${i.lang}`"
+            :to="`/${i.lang}`"
             :class="getLinkClass(i.lang, '')"
-            >{{ i.langDisplay }}</a
+            >{{ i.langDisplay }}</NuxtLink
           >
           <span
             v-if="isLinkActive(i.lang, '')"
@@ -122,7 +122,7 @@
 
       <div v-for="test in testOptions" :key="test">
         <h2 class="text-2xl my-5 mb-2 underline text-blue-500">
-          <a :id="test" :href="`/problem/${test}`"> {{ test }} </a>
+          <NuxtLink :id="test" :to="`/problem/${test}`"> {{ test }} </NuxtLink>
         </h2>
         <div v-for="input in getInputs(test)" :key="input" class="mt-5">
           <h3 class="text-base font-bold text-red-800">Input: {{ input }}</h3>
@@ -171,9 +171,9 @@
                   v-show="other || problem"
                   :class="['text-left', 'pl-4', mdHide]"
                 >
-                  <a :href="`/${i.lang}`" class="underline text-blue-500">{{
+                  <NuxtLink :to="`/${i.lang}`" class="underline text-blue-500">{{
                     i.lang
-                  }}</a>
+                  }}</NuxtLink>
                 </td>
                 <td class="text-right">
                   <a
@@ -217,12 +217,12 @@
             :key="idx"
             class="text-light-onSurfacePrimary"
           >
-            <a
+            <NuxtLink
               v-if="i != problem"
-              :href="`/problem/${i}`"
+              :to="`/problem/${i}`"
               :class="getLinkClass(i, i)"
             >
-              {{ i }}</a
+              {{ i }}</NuxtLink
             >
             <span v-if="i == problem" :class="getLinkClass(i, i)">{{ i }}</span>
           </li>
@@ -236,12 +236,12 @@
             :key="idx"
             class="text-light-onSurfacePrimary"
           >
-            <a
+            <NuxtLink
               v-if="!isLinkActive(lang.lang, i.lang)"
-              :href="`/${lang.lang}-vs-${i.lang}`"
+              :to="`/${lang.lang}-vs-${i.lang}`"
               :class="getLinkClass(lang.lang, i.lang)"
             >
-              {{ lang.langDisplay }} VS {{ i.langDisplay }}</a
+              {{ lang.langDisplay }} VS {{ i.langDisplay }}</NuxtLink
             >
             <span
               v-if="isLinkActive(lang.lang, i.lang)"
