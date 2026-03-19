@@ -22,7 +22,7 @@ fn int compute_tree_checksum(TreeNode* root)
 	return 1;
 }
 
-fn int main2(String[] args)
+fn int main(String[] args)
 {
 	int min_depth = 4;
 	int max_depth = 10;
