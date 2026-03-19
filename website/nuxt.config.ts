@@ -23,7 +23,7 @@ const config: NuxtConfig = {
         content: 'benchmarks for programming languages and compilers',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -81,6 +81,7 @@ const config: NuxtConfig = {
     plugins: [require('@tailwindcss/forms')],
   },
   router: {
+    base: '/Programming-Language-Benchmarks/',
     async extendRoutes(routes, resolve) {
       const langBenchResults = await getLangBenchResults($content)
 
