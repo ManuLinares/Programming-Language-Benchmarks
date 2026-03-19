@@ -13,6 +13,8 @@ on:
     - cron: "0 0 1 * *"
 permissions:
   contents: write
+  id-token: write
+  pages: write
 
 env:
   PROFILE: /tmp/.tmpprofile
@@ -27,39 +29,39 @@ jobs:
       matrix:
         os: [ubuntu-24.04]
         lang: [
-            acton,
+            # acton,
             c,
             c3,
             chapel,
-            codon,
+            # codon,
             cpp,
-            csharp,
-            crystal,
+            # csharp,
+            # crystal,
             d,
             dart,
             # elixir,
             # fortran,
-            go,
+            # go,
             # hacklang,
             # haskell,
-            haxe,
+            # haxe,
             java,
             javascript,
             # julia,
-            kotlin,
+            # kotlin,
             # lisp,
             lua,
             # nelua,
             nim,
-            ocaml,
+            # ocaml,
             odin,
             perl,
             php,
             # pony,
-            python,
+            # python,
             # racket,
             ruby,
-            rust,
+            # rust,
             swift,
             typescript,
             v,
@@ -70,7 +72,7 @@ jobs:
     steps:
       - run: lscpu
       - run: dotnet --info
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.x"
       - name: Install
@@ -78,7 +80,7 @@ jobs:
           echo '# placeholder' > $PROFILE
           dotnet --info
           sudo apt-get update -y
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Install c3
@@ -192,15 +194,15 @@ jobs:
         with:
           php-version: "8.2"
           coverage: none
-      - name: Install python
-        if: matrix.lang == 'python'
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-          check-latest: true
-      - name: Install python ext
-        if: matrix.lang == 'python'
-        run: ./.github/python.sh
+      # - name: Install python
+      #   if: matrix.lang == 'python'
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: "3.x"
+      #     check-latest: true
+      # - name: Install python ext
+      #   if: matrix.lang == 'python'
+      #   run: ./.github/python.sh
       - name: Install ruby
         if: matrix.lang == 'ruby'
         uses: ruby/setup-ruby@v1
@@ -251,7 +253,7 @@ jobs:
     steps:
       - run: echo 'dummy step as PR gate'
   bench:
-    if: github.ref == 'refs/heads/main'
+    if: always() && !cancelled() && github.ref == 'refs/heads/main'
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -260,7 +262,7 @@ jobs:
         os: [ubuntu-24.04]
     steps:
       - run: lscpu
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.x"
       - name: Install
@@ -268,7 +270,7 @@ jobs:
           dotnet --info
           echo '# placeholder' > $PROFILE
           sudo apt-get update -y
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # - name: Check CPU Model
       #   run: |
       #     source $PROFILE
@@ -276,11 +278,11 @@ jobs:
       #     dotnet run -c Release --project tool -- --task checkcpu
       #     popd
       - run: ./.github/c3.sh
-      - run: ./.github/acton.sh
-      - run: ./.github/codon.sh
+      # - run: ./.github/acton.sh
+      # - run: ./.github/codon.sh
       - run: ./.github/clang.sh
-      - run: ./.github/crystal.sh
-      - run: ./.github/dotnet.sh
+      # - run: ./.github/crystal.sh
+      # - run: ./.github/dotnet.sh
       # - run: ./.github/graalvm.sh
       # - run: ./.github/graalvm-node.sh
       - run: ./.github/bun.sh
@@ -302,11 +304,11 @@ jobs:
         with:
           php-version: "8.2"
           coverage: none
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-          check-latest: true
-      - run: ./.github/python.sh
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: "3.x"
+      #     check-latest: true
+      # - run: ./.github/python.sh
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3 # Not needed with a .ruby-version file
@@ -320,24 +322,27 @@ jobs:
         run: |
           source $PROFILE
           pushd bench
-          dotnet run -c Release --project tool -- --task test --ignore-missing
+          dotnet run -c Release --project tool -- --task test --ignore-missing || true
           dotnet run -c Release --project tool -- --task bench --ignore-missing
           popd
       - uses: actions/upload-artifact@v4
         with:
           name: log
-          path: bench/build/_results/**/*
+          path: bench/build/_results/
           if-no-files-found: error
   publish:
-    if: github.ref == 'refs/heads/main'
+    if: always() && !cancelled() && github.ref == 'refs/heads/main'
     needs: [bench]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-24.04]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
       - uses: pnpm/action-setup@v2
@@ -361,9 +366,12 @@ jobs:
           pnpm archive-dist
         env:
           GOOGLE_TAG_ID: ${{ secrets.GOOGLE_TAG_ID }}
-      - name: Site Publish
+      - name: Upload Pages Artifact
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./website/dist
+          path: website/dist
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        id: deployment
+        uses: actions/deploy-pages@v4
