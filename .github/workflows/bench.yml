@@ -11,6 +11,9 @@ on:
   merge_group:
   schedule:
     - cron: "0 0 1 * *"
+permissions:
+  contents: write
+
 env:
   PROFILE: /tmp/.tmpprofile
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
@@ -22,47 +25,47 @@ jobs:
       fail-fast: false
       # fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
         lang: [
-            # acton,
-            # c,
+            acton,
+            c,
             c3,
-            # chapel,
-            # codon,
-            # cpp,
-            # csharp,
-            # crystal,
-            # d,
-            # dart,
-            # # elixir,
-            # # fortran,
-            # go,
-            # # hacklang,
-            # # haskell,
-            # haxe,
-            # java,
-            # javascript,
-            # # julia,
-            # kotlin,
-            # # lisp,
-            # lua,
-            # # nelua,
-            # nim,
-            # ocaml,
-            # odin,
-            # perl,
-            # php,
-            # # pony,
-            # python,
-            # # racket,
-            # ruby,
-            # rust,
-            # swift,
-            # typescript,
-            # v,
-            # wasm,
-            # # wren,
-            # zig,
+            chapel,
+            codon,
+            cpp,
+            csharp,
+            crystal,
+            d,
+            dart,
+            # elixir,
+            # fortran,
+            go,
+            # hacklang,
+            # haskell,
+            haxe,
+            java,
+            javascript,
+            # julia,
+            kotlin,
+            # lisp,
+            lua,
+            # nelua,
+            nim,
+            ocaml,
+            odin,
+            perl,
+            php,
+            # pony,
+            python,
+            # racket,
+            ruby,
+            rust,
+            swift,
+            typescript,
+            v,
+            wasm,
+            # wren,
+            zig,
           ]
     steps:
       - run: lscpu
@@ -244,7 +247,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
     steps:
       - run: echo 'dummy step as PR gate'
   bench:
@@ -254,7 +257,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
     steps:
       - run: lscpu
       - uses: actions/setup-dotnet@v3
@@ -273,41 +276,41 @@ jobs:
       #     dotnet run -c Release --project tool -- --task checkcpu
       #     popd
       - run: ./.github/c3.sh
-      # - run: ./.github/acton.sh
-      # - run: ./.github/codon.sh
-      # - run: ./.github/clang.sh
-      # - run: ./.github/crystal.sh
-      # - run: ./.github/dotnet.sh
+      - run: ./.github/acton.sh
+      - run: ./.github/codon.sh
+      - run: ./.github/clang.sh
+      - run: ./.github/crystal.sh
+      - run: ./.github/dotnet.sh
       # - run: ./.github/graalvm.sh
       # - run: ./.github/graalvm-node.sh
-      # - run: ./.github/bun.sh
+      - run: ./.github/bun.sh
       # - run: ./.github/truffleruby.sh
-      # - run: ./.github/wasm.sh
+      - run: ./.github/wasm.sh
       # - run: ./.github/fortran.sh
-      # - uses: julia-actions/setup-julia@v1
-      # - run: ./.github/lua.sh
+      - uses: julia-actions/setup-julia@v1
+      - run: ./.github/lua.sh
       # - run: ./.github/racket.sh
-      # - run: ./.github/hashlink.sh
+      - run: ./.github/hashlink.sh
       # - run: ./.github/hhvm.sh
       # - run: ./.github/dart.sh
-      # - uses: shogo82148/actions-setup-perl@v1
-      #   with:
-      #     perl-version: "5"
-      #     multi-thread: true
-      # - name: Install PHP
-      #   uses: shivammathur/setup-php@v2
-      #   with:
-      #     php-version: "8.2"
-      #     coverage: none
-      # - uses: actions/setup-python@v4
-      #   with:
-      #     python-version: "3.x"
-      #     check-latest: true
-      # - run: ./.github/python.sh
-      # - uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: 3 # Not needed with a .ruby-version file
-      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: "5"
+          multi-thread: true
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          check-latest: true
+      - run: ./.github/python.sh
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3 # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - uses: actions/download-artifact@v4
         with:
           pattern: build-*
@@ -331,7 +334,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -360,9 +363,7 @@ jobs:
           GOOGLE_TAG_ID: ${{ secrets.GOOGLE_TAG_ID }}
       - name: Site Publish
         if: github.ref == 'refs/heads/main'
-        env:
-          VERCEL_PUBLISH_TOKEN: ${{ secrets.VERCEL_PUBLISH_TOKEN }}
-        run: |
-          npm i -g vercel
-          vercel --version
-          vercel website --prod --yes -t $VERCEL_PUBLISH_TOKEN || echo 'ignore errors'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/dist
